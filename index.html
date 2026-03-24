@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bridge</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#0b1020;color:#fff;margin:0;padding:16px}
+    .card{background:#141a2f;border-radius:16px;padding:16px;margin-bottom:16px}
+    input,button,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #2d365f;background:#0f1530;color:#fff;font-size:16px}
+    button{background:#1f6feb;border:none;font-weight:600}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    pre{white-space:pre-wrap;word-break:break-word}
+    label{display:block;margin-bottom:8px;color:#c9d1ff}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Binance ↔ OpenAI Bridge</h2>
+    <label>Bridge Token</label>
+    <input id="token" placeholder="X-Bridge-Token" />
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label>Symbol</label>
+        <input id="symbol" value="SIRENUSDT" />
+      </div>
+      <div style="display:flex;align-items:end;">
+        <button onclick="loadMarket()">רענן שוק</button>
+      </div>
+    </div>
+    <pre id="market"></pre>
+  </div>
+
+  <div class="card">
+    <label>שאלה לבוט</label>
+    <textarea id="message" rows="4" placeholder="Analyze current setup and open positions"></textarea>
+    <button onclick="chat()">שלח</button>
+    <pre id="chat"></pre>
+  </div>
+
+<script>
+async function api(path, opts={}) {
+  const token = document.getElementById('token').value;
+  opts.headers = Object.assign({}, opts.headers || {}, {'X-Bridge-Token': token});
+  const res = await fetch(path, opts);
+  const text = await res.text();
+  try { return JSON.parse(text); } catch { return text; }
+}
+async function loadMarket(){
+  const symbol = document.getElementById('symbol').value;
+  const data = await api('/market/' + encodeURIComponent(symbol));
+  document.getElementById('market').textContent = JSON.stringify(data, null, 2);
+}
+async function chat(){
+  const symbol = document.getElementById('symbol').value;
+  const message = document.getElementById('message').value;
+  const data = await api('/chat', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({symbol, message})
+  });
+  document.getElementById('chat').textContent = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>
