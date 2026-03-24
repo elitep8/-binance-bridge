@@ -89,12 +89,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Binance OpenAI Bridge", version="0.1.0", lifespan=lifespan)
-app.mount("/static", StaticFiles(directory=str(ROOT / "static")), name="static")
+
 
 
 @app.get("/")
 async def root() -> FileResponse:
-    return FileResponse(str(ROOT / "static" / "index.html"))
+   return FileResponse("index.html")
 
 
 @app.get("/health")
