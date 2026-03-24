@@ -8,9 +8,9 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 
-from .models import ChatRequest, ChatResponse, OrderRequest, OrderResponse, PositionInfo
-from .binance_client import BinanceFuturesClient
-from .openai_agent import BridgeAgent
+from  models import ChatRequest, ChatResponse, OrderRequest, OrderResponse, PositionInfo
+from  binance_client import BinanceFuturesClient
+from  openai_agent import BridgeAgent
 
 load_dotenv()
 ROOT = Path(__file__).resolve().parents[1]
